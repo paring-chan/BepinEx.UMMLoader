@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net35</TargetFramework>
+    <TargetFramework>net471</TargetFramework>
     <LangVersion>latest</LangVersion>
 
     <AssemblyName>UnityModManager</AssemblyName>
@@ -40,6 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>..\lib\BepInEx.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\lib\UnityEngine.dll</HintPath>
     </Reference>

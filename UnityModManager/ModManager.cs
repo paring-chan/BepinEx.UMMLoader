@@ -79,11 +79,6 @@ namespace UnityModManagerNet
         internal static bool started;
         internal static bool initialized;
 
-        public static void Main()
-        {
-            AppDomain.CurrentDomain.AssemblyLoad += OnLoad;
-        }
-
         static void OnLoad(object sender, AssemblyLoadEventArgs args)
         {
             var name = args.LoadedAssembly.GetName().Name;

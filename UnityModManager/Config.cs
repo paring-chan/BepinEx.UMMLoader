@@ -109,23 +109,36 @@ namespace UnityModManagerNet
             public string GameVersionPoint;
             public string MinimalManagerVersion;
 
-            static readonly string filepath = Path.Combine(Path.GetDirectoryName(typeof(GameInfo).Assembly.Location), "Config.xml");
+            // static readonly string filepath = Path.Combine(Path.GetDirectoryName(typeof(GameInfo).Assembly.Location), "Config.xml");
 
             public static GameInfo Load()
             {
-                try
+                return new GameInfo
                 {
-                    using (var stream = File.OpenRead(filepath))
-                    {
-                        return new XmlSerializer(typeof(GameInfo)).Deserialize(stream) as GameInfo;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Error($"Can't read file '{filepath}'.");
-                    Debug.LogException(e);
-                    return null;
-                }
+                    Name = Application.productName,
+                    Folder = Directory.GetCurrentDirectory(),
+                    ModsDirectory = "Mods",
+                    ModInfo = "Info.json",
+                    EntryPoint = null,
+                    StartingPoint = null,
+                    UIStartingPoint = null,
+                    GameExe = null,
+                    MinimalManagerVersion = null,
+                    GameVersionPoint = null
+                };
+                // try
+                // {
+                //     using (var stream = File.OpenRead(filepath))
+                //     {
+                //         return new XmlSerializer(typeof(GameInfo)).Deserialize(stream) as GameInfo;
+                //     }
+                // }
+                // catch (Exception e)
+                // {
+                //     Logger.Error($"Can't read file '{filepath}'.");
+                //     Debug.LogException(e);
+                //     return null;
+                // }
             }
         }
     }

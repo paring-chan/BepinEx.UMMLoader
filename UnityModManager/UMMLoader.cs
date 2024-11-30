@@ -16,6 +16,6 @@ public class UMMLoader : BaseUnityPlugin
 
     private void Start()
     {
-        UnityModManager.UI.Instance.FirstLaunch();
+        UnityModManager.UI.Load();
     }
 }

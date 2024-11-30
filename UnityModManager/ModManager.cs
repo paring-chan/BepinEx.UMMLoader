@@ -74,10 +74,16 @@ namespace UnityModManagerNet
         public static string OldModsPath = "";
 
         internal static Param Params { get; set; } = new Param();
+        internal static InstallerParam InstallerParams { get; set; } = new InstallerParam();
         internal static GameInfo Config { get; set; } = new GameInfo();
 
         internal static bool started;
         internal static bool initialized;
+
+        public static void Main()
+        {
+            AppDomain.CurrentDomain.AssemblyLoad += OnLoad;
+        }
 
         static void OnLoad(object sender, AssemblyLoadEventArgs args)
         {
@@ -130,6 +136,7 @@ namespace UnityModManagerNet
             Logger.NativeLog($"IsSupportOnSessionStop: {IsSupportOnSessionStop}.");
 
             Params = Param.Load();
+            InstallerParams = InstallerParam.Load();
 
             modsPath = Path.Combine(Environment.CurrentDirectory, Config.ModsDirectory);
             if (!Directory.Exists(modsPath))

@@ -34,7 +34,12 @@ namespace UnityModManagerNet
         public static Version ParseVersion(string str)
         {
             var array = str.Split('.');
-            if (array.Length >= 3)
+            if (array.Length >= 4)
+            {
+                var regex = new Regex(@"\D");
+                return new Version(int.Parse(regex.Replace(array[0], "")), int.Parse(regex.Replace(array[1], "")), int.Parse(regex.Replace(array[2], "")), int.Parse(regex.Replace(array[3], "")));
+            }
+            else if (array.Length >= 3)
             {
                 var regex = new Regex(@"\D");
                 return new Version(int.Parse(regex.Replace(array[0], "")), int.Parse(regex.Replace(array[1], "")), int.Parse(regex.Replace(array[2], "")));
@@ -52,6 +57,21 @@ namespace UnityModManagerNet
 
             Logger.Error($"Error parsing version {str}");
             return new Version();
+        }
+
+        public static bool ParseNexusUrl(string url, out string game, out string id)
+        {
+            game = null;
+            id = null;
+            var regex = new Regex(@"https:\/\/www\.nexusmods\.com\/(\w+)\/mods\/(\d+)", RegexOptions.IgnoreCase);
+            var matches = regex.Matches(url);
+            foreach (Match match in matches)
+            {
+                game = match.Groups[1].Value;
+                id = match.Groups[2].Value;
+                return true;
+            }
+            return false;
         }
 
         public static bool IsUnixPlatform()

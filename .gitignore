@@ -4,3 +4,4 @@ lib/BepInEx.dll
 */bin
 .vs
 */*.csproj.user
+.idea

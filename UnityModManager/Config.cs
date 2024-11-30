@@ -17,6 +17,7 @@ namespace UnityModManagerNet
                 public string Id;
                 [XmlAttribute]
                 public bool Enabled = true;
+                public KeyBinding Hotkey = new KeyBinding();
             }
 
             public static KeyBinding DefaultHotkey = new KeyBinding { keyCode = KeyCode.F10, modifiers = 1 };
@@ -28,6 +29,7 @@ namespace UnityModManagerNet
             public float WindowHeight;
             public float UIScale = 1f;
             public string UIFont = null;
+            public DateTime LastUpdateCheck;
 
             public List<Mod> ModParams = new List<Mod>();
 
@@ -40,7 +42,7 @@ namespace UnityModManagerNet
                     ModParams.Clear();
                     foreach (var mod in modEntries)
                     {
-                        ModParams.Add(new Mod { Id = mod.Info.Id, Enabled = mod.Enabled });
+                        ModParams.Add(new Mod { Id = mod.Info.Id, Enabled = mod.Enabled, Hotkey = mod.Hotkey });
                     }
                     using (var writer = new StreamWriter(filepath))
                     {
@@ -86,8 +88,39 @@ namespace UnityModManagerNet
                     if (mod != null)
                     {
                         mod.Enabled = item.Enabled;
+                        mod.Hotkey = item.Hotkey != null ? item.Hotkey : new KeyBinding();
                     }
                 }
+            }
+        }
+
+        [XmlRoot("Param")]
+        public sealed class InstallerParam
+        {
+            public string APIkey;
+
+            public static InstallerParam Load()
+            {
+                var filepath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UnityModManagerNet"), "Params.xml");
+                if (File.Exists(filepath))
+                {
+                    try
+                    {
+                        using (var stream = File.OpenRead(filepath))
+                        {
+                            var serializer = new XmlSerializer(typeof(InstallerParam));
+                            var result = serializer.Deserialize(stream) as InstallerParam;
+
+                            return result;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error($"Can't read file '{filepath}'.");
+                        Debug.LogException(e);
+                    }
+                }
+                return new InstallerParam();
             }
         }
 
@@ -109,36 +142,37 @@ namespace UnityModManagerNet
             public string GameVersionPoint;
             public string MinimalManagerVersion;
 
-            // static readonly string filepath = Path.Combine(Path.GetDirectoryName(typeof(GameInfo).Assembly.Location), "Config.xml");
+            static readonly string filepath = Path.Combine(Path.GetDirectoryName(typeof(GameInfo).Assembly.Location), "Config.xml");
 
             public static GameInfo Load()
             {
-                return new GameInfo
+                try
                 {
-                    Name = Application.productName,
-                    Folder = Directory.GetCurrentDirectory(),
-                    ModsDirectory = "Mods",
-                    ModInfo = "Info.json",
-                    EntryPoint = null,
-                    StartingPoint = null,
-                    UIStartingPoint = null,
-                    GameExe = null,
-                    MinimalManagerVersion = null,
-                    GameVersionPoint = null
-                };
-                // try
-                // {
-                //     using (var stream = File.OpenRead(filepath))
-                //     {
-                //         return new XmlSerializer(typeof(GameInfo)).Deserialize(stream) as GameInfo;
-                //     }
-                // }
-                // catch (Exception e)
-                // {
-                //     Logger.Error($"Can't read file '{filepath}'.");
-                //     Debug.LogException(e);
-                //     return null;
-                // }
+                    using (var stream = File.OpenRead(filepath))
+                    {
+                        var obj = new XmlSerializer(typeof(GameInfo)).Deserialize(stream) as GameInfo;
+                        if (!string.IsNullOrEmpty(obj.Name)) 
+                        {
+                            obj.Name = obj.Name.Replace("&amp;", "&");
+                        }
+                        if (!string.IsNullOrEmpty(obj.Folder))
+                        {
+                            obj.Folder = obj.Folder.Replace("&amp;", "&");
+                        }
+                        if (!string.IsNullOrEmpty(obj.GameExe))
+                        {
+                            obj.GameExe = obj.GameExe.Replace("&amp;", "&");
+                        }
+
+                        return obj;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error($"Can't read file '{filepath}'.");
+                    Debug.LogException(e);
+                    return null;
+                }
             }
         }
     }

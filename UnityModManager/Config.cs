@@ -13,8 +13,10 @@ namespace UnityModManagerNet
             [Serializable]
             public class Mod
             {
-                [XmlAttribute] public string Id;
-                [XmlAttribute] public bool Enabled = true;
+                [XmlAttribute]
+                public string Id;
+                [XmlAttribute]
+                public bool Enabled = true;
                 public KeyBinding Hotkey = new KeyBinding();
             }
 
@@ -31,8 +33,7 @@ namespace UnityModManagerNet
 
             public List<Mod> ModParams = new List<Mod>();
 
-            static readonly string filepath =
-                Path.Combine(Path.GetDirectoryName(typeof(Param).Assembly.Location), "Params.xml");
+            static readonly string filepath = Path.Combine(Path.GetDirectoryName(typeof(Param).Assembly.Location), "Params.xml");
 
             public void Save()
             {
@@ -43,7 +44,6 @@ namespace UnityModManagerNet
                     {
                         ModParams.Add(new Mod { Id = mod.Info.Id, Enabled = mod.Enabled, Hotkey = mod.Hotkey });
                     }
-
                     using (var writer = new StreamWriter(filepath))
                     {
                         var serializer = new XmlSerializer(typeof(Param));
@@ -67,7 +67,7 @@ namespace UnityModManagerNet
                         {
                             var serializer = new XmlSerializer(typeof(Param));
                             var result = serializer.Deserialize(stream) as Param;
-
+                            
                             return result;
                         }
                     }
@@ -77,7 +77,6 @@ namespace UnityModManagerNet
                         Debug.LogException(e);
                     }
                 }
-
                 return new Param();
             }
 
@@ -102,10 +101,7 @@ namespace UnityModManagerNet
 
             public static InstallerParam Load()
             {
-                var filepath =
-                    Path.Combine(
-                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                            "UnityModManagerNet"), "Params.xml");
+                var filepath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UnityModManagerNet"), "Params.xml");
                 if (File.Exists(filepath))
                 {
                     try
@@ -124,7 +120,6 @@ namespace UnityModManagerNet
                         Debug.LogException(e);
                     }
                 }
-
                 return new InstallerParam();
             }
         }
@@ -132,7 +127,8 @@ namespace UnityModManagerNet
         [XmlRoot("Config")]
         public class GameInfo
         {
-            [XmlAttribute] public string Name;
+            [XmlAttribute]
+            public string Name;
             public string Folder;
             public string ModsDirectory;
             public string ModInfo;
@@ -146,8 +142,7 @@ namespace UnityModManagerNet
             public string GameVersionPoint;
             public string MinimalManagerVersion;
 
-            static readonly string filepath =
-                Path.Combine(Path.GetDirectoryName(typeof(GameInfo).Assembly.Location), "Config.xml");
+            static readonly string filepath = Path.Combine(Path.GetDirectoryName(typeof(GameInfo).Assembly.Location), "Config.xml");
 
             public static GameInfo Load()
             {
@@ -164,35 +159,6 @@ namespace UnityModManagerNet
                     MinimalManagerVersion = null,
                     GameVersionPoint = null
                 };
-                // try
-                // {
-                //     using (var stream = File.OpenRead(filepath))
-                //     {
-                //         var obj = new XmlSerializer(typeof(GameInfo)).Deserialize(stream) as GameInfo;
-                //         if (!string.IsNullOrEmpty(obj.Name))
-                //         {
-                //             obj.Name = obj.Name.Replace("&amp;", "&");
-                //         }
-                //
-                //         if (!string.IsNullOrEmpty(obj.Folder))
-                //         {
-                //             obj.Folder = obj.Folder.Replace("&amp;", "&");
-                //         }
-                //
-                //         if (!string.IsNullOrEmpty(obj.GameExe))
-                //         {
-                //             obj.GameExe = obj.GameExe.Replace("&amp;", "&");
-                //         }
-                //
-                //         return obj;
-                //     }
-                // }
-                // catch (Exception e)
-                // {
-                //     Logger.Error($"Can't read file '{filepath}'.");
-                //     Debug.LogException(e);
-                //     return null;
-                // }
             }
         }
     }

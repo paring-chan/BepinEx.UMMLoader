@@ -386,10 +386,12 @@ namespace UnityModManagerNet
 
             GameScripts.OnAfterLoadMods();
 
-            //if (!UI.Load())
-            //{
-            //    Logger.Error($"Can't load UI.");
-            //}
+            if (!UI.Load())
+            {
+                Logger.Error($"Can't load UI.");
+            }
+            
+            Logger.Log("Start complete!");
         }
 
         static MethodInfo GetTexturePropertyNames = typeof(Material).GetMethod("GetTexturePropertyNames", new Type[] { typeof(List<string>) });

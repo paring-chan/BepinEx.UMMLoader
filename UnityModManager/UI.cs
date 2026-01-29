@@ -15,6 +15,7 @@ namespace UnityModManagerNet
         {
             internal static bool Load()
             {
+                Logger.Log("UI.Load called");
                 if (Instance) return true;
 
                 try
@@ -114,6 +115,7 @@ namespace UnityModManagerNet
 
             private void Start()
             {
+                Logger.Log("UI.Start");
                 CalculateWindowPos();
                 if (string.IsNullOrEmpty(Config.UIStartingPoint))
                 {
@@ -291,7 +293,7 @@ namespace UnityModManagerNet
                 tooltipBox = new GUIStyle();
                 tooltipBox.alignment = TextAnchor.MiddleCenter;
                 tooltipBox.normal.textColor = Color.white;
-                tooltipBox.normal.background = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                tooltipBox.normal.background = Textures.Tooltip;
                 tooltipBox.normal.background.SetPixels32(new Color32[4].Select(x => x = new Color32(30, 30, 30, 255)).ToArray());
                 tooltipBox.normal.background.Apply();
                 tooltipBox.hover = tooltipBox.normal;
